@@ -18,29 +18,18 @@ num_rays = 36                               # Number of rays
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Generate points of the first type
-def generate_first_type_points_on_grid():
+# Generate points on a grid
+def generate_points_on_grid(point_type: str) -> tuple[np.ndarray, np.ndarray]:
     x = np.arange(-pixel_axis_size / 2, pixel_axis_size)
     y = np.arange(-pixel_axis_size / 2, pixel_axis_size)
     X, Y = np.meshgrid(x, y)
-    first_type_points = np.vstack([X.ravel(), Y.ravel()]).T
-
-    return first_type_points, np.full(len(first_type_points), 'first_type')
-
-
-# Generation of points of the second type
-def generate_second_type_points_on_grid():
-    x = np.arange(-pixel_axis_size / 2, pixel_axis_size)
-    y = np.arange(-pixel_axis_size / 2, pixel_axis_size)
-    X, Y = np.meshgrid(x, y)
-    second_type_points = np.vstack([X.ravel(), Y.ravel()]).T
-
-    return second_type_points, np.arange(len(second_type_points)), np.full(len(second_type_points), 'second_type')
+    points = np.vstack([X.ravel(), Y.ravel()]).T
+    return points, np.full(len(points), point_type)
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Ray generation
-def generate_rays_around_first_type_points(points):
+def generate_rays_around_points(points):
     max_distance = np.linalg.norm(points, axis=1).max()
     angles = np.linspace(0, 2 * np.pi, num=num_rays, endpoint=False)
     rays = []
@@ -135,13 +124,21 @@ def generate_fig3():
     fig3 = plt.subplots(figsize=(8, 8))
     ax3 = plt.gca()
 
-    Second_Type_Points, Second_Type_Point_Ids, _ = generate_second_type_points_on_grid()
-    First_Type_Points, _ = generate_first_type_points_on_grid()
-    Usual_Total_Points_Dict = [{"id": id, "position": pos} for id, pos in zip(Second_Type_Point_Ids, Second_Type_Points)]
+    # Generate points for first and second types
+    Second_Type_Points, _ = generate_points_on_grid("second_type")
+    First_Type_Points, _ = generate_points_on_grid("first_type")
 
-    Rays = generate_rays_around_first_type_points(First_Type_Points)
-    Perpendiculars = drawing_perpendiculars(Usual_Total_Points_Dict, Rays)
-    Intersections = find_intersection_points(Usual_Total_Points_Dict, Rays)
+    # Convert second type points to dictionaries
+    second_type_points_dict = [{"id": idx, "position": pos} for idx, pos in enumerate(Second_Type_Points)]
+
+    # Generate rays
+    Rays = generate_rays_around_points(First_Type_Points)
+
+    # Generate perpendiculars
+    Perpendiculars = drawing_perpendiculars(second_type_points_dict, Rays)
+
+    # Find intersection points
+    Intersections = find_intersection_points(second_type_points_dict, Rays)
 
     # Ray drawing
     for Ray in Rays:
