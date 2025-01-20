@@ -28,7 +28,7 @@ def generate_points_on_grid(point_type: str) -> tuple[np.ndarray, np.ndarray]:
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Ray generation
+# Rays generation
 def generate_rays_around_points(points):
     max_distance = np.linalg.norm(points, axis=1).max()
     angles = np.linspace(0, 2 * np.pi, num=num_rays, endpoint=False)
@@ -51,7 +51,7 @@ def generate_rays_around_points(points):
     return rays
 
 
-# Perpendicular generation
+# Perpendiculars generation
 def find_perpendicular_lines(point, ray):
     ray_x1, ray_y1 = ray["ray"][0][0], ray["ray"][1][0]
     ray_x2, ray_y2 = ray["ray"][0][1], ray["ray"][1][1]
