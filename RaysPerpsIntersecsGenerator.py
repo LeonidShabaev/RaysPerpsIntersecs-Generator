@@ -120,9 +120,9 @@ def drawing_perpendiculars(points, rays, batch_size=num_rays):
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Create a map of the distribution of rays, perpendiculars and intersection points
-def generate_fig3():
-    fig3 = plt.subplots(figsize=(8, 8))
-    ax3 = plt.gca()
+def generate_fig():
+    fig, ax = plt.subplots(figsize=(8, 8))
+
 
     # Generate points for first and second types
     Second_Type_Points, _ = generate_points_on_grid("second_type")
@@ -142,34 +142,34 @@ def generate_fig3():
 
     # Ray drawing
     for Ray in Rays:
-        ax3.plot(Ray["ray"][0], Ray["ray"][1], color='yellow', alpha=1, zorder=2)
+        ax.plot(Ray["ray"][0], Ray["ray"][1], color='yellow', alpha=1, zorder=2)
 
     # Drawing perpendiculars
     for Perpendicular in Perpendiculars:
-        ax3.plot(Perpendicular["perpendicular"][0], Perpendicular["perpendicular"][1], color='green', alpha=0.3, zorder=3)
+        ax.plot(Perpendicular["perpendicular"][0], Perpendicular["perpendicular"][1], color='green', alpha=0.3, zorder=3)
     
     # Drawing the second type of points
-    ax3.scatter(Second_Type_Points[:, 0], Second_Type_Points[:, 1], s=10, c='red', alpha=1, zorder=4)
+    ax.scatter(Second_Type_Points[:, 0], Second_Type_Points[:, 1], s=10, c='red', alpha=1, zorder=4)
     
     # Drawing intersection points
     intersection_points = np.array([inter["intersection_point"] for inter in Intersections])  # Точки пересечения уже в kpc
-    ax3.scatter(intersection_points[:, 0], intersection_points[:, 1], s=1, c='orange', alpha=1, zorder=5)
+    ax.scatter(intersection_points[:, 0], intersection_points[:, 1], s=1, c='orange', alpha=1, zorder=5)
 
     # Figure title
-    ax3.set_title('Rays, Perpendiculars and Intersection Points')
+    ax.set_title('Rays, Perpendiculars and Intersection Points')
     # Ticks properties
     tick_step = 1
     ticks = np.arange(-pixel_axis_size, pixel_axis_size + tick_step, tick_step)
 
-    ax3.set_xticks(ticks)
-    ax3.set_yticks(ticks)
+    ax.set_xticks(ticks)
+    ax.set_yticks(ticks)
 
     # Axes names
-    ax3.set_xlabel('X axis')
-    ax3.set_ylabel('Y axis')
+    ax.set_xlabel('X axis')
+    ax.set_ylabel('Y axis')
 
     plt.show()
 
-    return fig3, ax3
+    return fig, ax
 
-generate_fig3()
+generate_fig()
