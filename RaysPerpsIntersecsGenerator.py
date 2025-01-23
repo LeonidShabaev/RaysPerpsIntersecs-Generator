@@ -20,8 +20,8 @@ num_rays = 36                               # Number of rays
 
 # Generating points on a grid
 def generating_points_on_grid(point_type: str) -> tuple[np.ndarray, np.ndarray]:
-    x = np.arange(-pixel_axis_size / 2, pixel_axis_size)
-    y = np.arange(-pixel_axis_size / 2, pixel_axis_size)
+    x = np.arange(-pixel_axis_size + 1 / 2, pixel_axis_size)
+    y = np.arange(-pixel_axis_size + 1 / 2, pixel_axis_size)
     X, Y = np.meshgrid(x, y)
     points = np.vstack([X.ravel(), Y.ravel()]).T
     return points, np.full(len(points), point_type)
@@ -141,18 +141,18 @@ def generating_figure():
 
     # Drawing rays
     for Ray in Rays:
-        ax.plot(Ray["ray"][0], Ray["ray"][1], color='yellow', alpha=1, zorder=2)
+        ax.plot(Ray["ray"][0], Ray["ray"][1], color='yellow', alpha=1, zorder=0)
 
     # Drawing perpendiculars
     for Perpendicular in Perpendiculars:
-        ax.plot(Perpendicular["perpendicular"][0], Perpendicular["perpendicular"][1], color='green', alpha=0.3, zorder=3)
+        ax.plot(Perpendicular["perpendicular"][0], Perpendicular["perpendicular"][1], color='green', alpha=0.3, zorder=1)
     
     # Drawing the second type of points
-    ax.scatter(Second_Type_Points[:, 0], Second_Type_Points[:, 1], s=10, c='red', alpha=1, zorder=4)
+    ax.scatter(Second_Type_Points[:, 0], Second_Type_Points[:, 1], s=10, c='red', alpha=1, zorder=2)
     
     # Drawing intersection points
-    intersection_points = np.array([inter["intersection_point"] for inter in Intersections])  # Точки пересечения уже в kpc
-    ax.scatter(intersection_points[:, 0], intersection_points[:, 1], s=1, c='orange', alpha=1, zorder=5)
+    intersection_points = np.array([inter["intersection_point"] for inter in Intersections])
+    ax.scatter(intersection_points[:, 0], intersection_points[:, 1], s=1, c='orange', alpha=1, zorder=3)
 
     # Figure title
     ax.set_title('Rays, Perpendiculars and Intersection Points')
