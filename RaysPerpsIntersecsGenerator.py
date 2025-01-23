@@ -18,8 +18,8 @@ num_rays = 36                               # Number of rays
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Generate points on a grid
-def generate_points_on_grid(point_type: str) -> tuple[np.ndarray, np.ndarray]:
+# Generating points on a grid
+def generating_points_on_grid(point_type: str) -> tuple[np.ndarray, np.ndarray]:
     x = np.arange(-pixel_axis_size / 2, pixel_axis_size)
     y = np.arange(-pixel_axis_size / 2, pixel_axis_size)
     X, Y = np.meshgrid(x, y)
@@ -28,8 +28,8 @@ def generate_points_on_grid(point_type: str) -> tuple[np.ndarray, np.ndarray]:
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Rays generation
-def generate_rays_around_points(points):
+# Rays generating
+def generating_rays_around_points(points):
     max_distance = np.linalg.norm(points, axis=1).max()
     angles = np.linspace(0, 2 * np.pi, num=num_rays, endpoint=False)
     rays = []
@@ -51,8 +51,8 @@ def generate_rays_around_points(points):
     return rays
 
 
-# Perpendiculars generation
-def find_perpendicular_lines(point, ray):
+# Finding_perpendicular_lines
+def finding_perpendicular_lines(point, ray):
     ray_x1, ray_y1 = ray["ray"][0][0], ray["ray"][1][0]
     ray_x2, ray_y2 = ray["ray"][0][1], ray["ray"][1][1]
 
@@ -87,11 +87,11 @@ def find_perpendicular_lines(point, ray):
 
 
 # Determining intersection points
-def find_intersection_points(second_type_points, rays):
+def finding_intersection_points(second_type_points, rays):
     intersections = []
     for second_type_point in tqdm(second_type_points, desc="Determining intersection points", total=len(second_type_points)):
         for ray in rays:
-            intersection = find_perpendicular_lines(second_type_point, ray)
+            intersection = finding_perpendicular_lines(second_type_point, ray)
             if intersection is not None:
                 intersection["belongs_to_perpendicular"] = True
                 intersection["ray_index"] = ray["ray_index"]
@@ -111,7 +111,7 @@ def drawing_perpendiculars(points, rays, batch_size=num_rays):
         batch_perpendiculars = []
         for point in tqdm(batch_points, desc="Second type points generation", total=len(batch_points)):
             for ray in rays:
-                result = find_perpendicular_lines(point, ray)
+                result = finding_perpendicular_lines(point, ray)
                 if result is not None:
                     batch_perpendiculars.append(result)
         perpendiculars_batches.extend(batch_perpendiculars)
@@ -120,27 +120,26 @@ def drawing_perpendiculars(points, rays, batch_size=num_rays):
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Create a map of the distribution of rays, perpendiculars and intersection points
-def generate_fig():
+def generating_figure():
     fig, ax = plt.subplots(figsize=(8, 8))
 
+    # Generating points for first and second types
+    Second_Type_Points, _ = generating_points_on_grid("second_type")
+    First_Type_Points, _ = generating_points_on_grid("first_type")
 
-    # Generate points for first and second types
-    Second_Type_Points, _ = generate_points_on_grid("second_type")
-    First_Type_Points, _ = generate_points_on_grid("first_type")
-
-    # Convert second type points to dictionaries
+    # Converting second type points to dictionaries
     second_type_points_dict = [{"id": idx, "position": pos} for idx, pos in enumerate(Second_Type_Points)]
 
-    # Generate rays
-    Rays = generate_rays_around_points(First_Type_Points)
+    # Generating rays
+    Rays = generating_rays_around_points(First_Type_Points)
 
-    # Generate perpendiculars
+    # Generating perpendiculars
     Perpendiculars = drawing_perpendiculars(second_type_points_dict, Rays)
 
-    # Find intersection points
-    Intersections = find_intersection_points(second_type_points_dict, Rays)
+    # Finding intersection points
+    Intersections = finding_intersection_points(second_type_points_dict, Rays)
 
-    # Ray drawing
+    # Drawing rays
     for Ray in Rays:
         ax.plot(Ray["ray"][0], Ray["ray"][1], color='yellow', alpha=1, zorder=2)
 
@@ -172,4 +171,4 @@ def generate_fig():
 
     return fig, ax
 
-generate_fig()
+generating_figure()
