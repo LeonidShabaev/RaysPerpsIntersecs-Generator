@@ -147,13 +147,13 @@ def generate_fig3():
     # Drawing perpendiculars
     for Perpendicular in Perpendiculars:
         ax3.plot(Perpendicular["perpendicular"][0], Perpendicular["perpendicular"][1], color='green', alpha=0.3, zorder=3)
-
+    
+    # Drawing the second type of points
+    ax3.scatter(Second_Type_Points[:, 0], Second_Type_Points[:, 1], s=10, c='red', alpha=1, zorder=4)
+    
     # Drawing intersection points
     intersection_points = np.array([inter["intersection_point"] for inter in Intersections])  # Точки пересечения уже в kpc
-    ax3.scatter(intersection_points[:, 0], intersection_points[:, 1], s=1, c='orange', alpha=1, zorder=4)
-
-    # Drawing the second type of points
-    ax3.scatter(Second_Type_Points[:, 0], Second_Type_Points[:, 1], s=5, c='red', alpha=1, zorder=5)
+    ax3.scatter(intersection_points[:, 0], intersection_points[:, 1], s=1, c='orange', alpha=1, zorder=5)
 
     # Figure title
     ax3.set_title('Rays, Perpendiculars and Intersection Points')
